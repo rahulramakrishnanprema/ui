@@ -143,23 +143,6 @@ export const AgentPerformanceCharts: React.FC<AgentPerformanceChartsProps> = ({ 
       </div>
 
       {/* Agent Model Distribution */}
-      <div className="bg-white rounded-xl p-6 shadow-sm border border-slate-200 lg:col-span-2">
-        <h3 className="text-lg font-semibold text-slate-900 mb-4">LLM Model Usage by Agent</h3>
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-          {agents.map((agent, index) => (
-            <div key={agent.id} className="text-center p-4 bg-slate-50 rounded-lg">
-              <div className="text-2xl font-bold text-slate-900 mb-1">
-                {agent.name.replace('Agent', '')}
-              </div>
-              <div className="text-sm text-slate-600 mb-2">{agent.llmModel}</div>
-              <div className="text-lg font-semibold" style={{ color: colors[index % colors.length] }}>
-                {formatTokens(agent.tokensConsumed)}
-              </div>
-              <div className="text-xs text-slate-500">tokens used</div>
-            </div>
-          ))}
-        </div>
-      </div>
     </div>
   );
 };
