@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Save, Database, Cloud, Github, Settings as SettingsIcon, Key, Server, BarChart3, Zap, CheckCircle, AlertCircle, MessageSquare } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { api } from '../services/api';
 
 interface ServiceConfig {
   id: string;
@@ -214,29 +215,16 @@ export const SettingsPage: React.FC = () => {
     setSaveStatus('idle');
 
     try {
-      // Simulate API call to backend with queue integration
-      const configData = {
-        service: selectedService.id,
-        config: configs,
-        timestamp: new Date().toISOString()
-      };
-
-      // This would send to your Python backend with RabbitMQ queue
-      const response = await fetch('/api/config/save', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(configData)
-      });
-
-      if (response.ok) {
-        // Update service configuration status
-        selectedService.configured = true;
-        setSaveStatus('success');
-        setTimeout(() => setSaveStatus('idle'), 3000);
-      } else {
-        throw new Error('Failed to save configuration');
-      }
+      // Save configuration using the API service
+      await api.saveConfig(selectedService.id, configs);
+      
+      // Update service configuration status
+      selectedService.configured = true;
+      setSaveStatus('success');
+      setTimeout(() => setSaveStatus('idle'), 3000);
+      
     } catch (error) {
+      console.error('Failed to save configuration:', error);
       setSaveStatus('error');
       setTimeout(() => setSaveStatus('idle'), 3000);
     } finally {

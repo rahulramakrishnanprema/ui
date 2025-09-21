@@ -19,7 +19,8 @@ import { WorkflowTracker } from './components/WorkflowTracker';
 import { PerformanceCharts } from './components/PerformanceCharts';
 import { AgentPerformanceCharts } from './components/AgentPerformanceCharts';
 import { SettingsPage } from './components/SettingsPage';
-import { useMockData } from './hooks/useMockData';
+import { useBackendData } from './hooks/useBackendData';
+import { SystemStatus } from './components/SystemStatus';
 
 function App() {
   const [activeTab, setActiveTab] = useState('dashboard');
@@ -31,41 +32,61 @@ function App() {
     metrics,
     performanceData,
     isSystemRunning,
+    isConnected,
+    error,
     startSystem,
-    stopSystem
-  } = useMockData();
+    stopSystem,
+    resetStats
+  } = useBackendData();
 
   const renderMainContent = () => {
     switch (activeTab) {
       case 'dashboard':
         return (
           <div className="space-y-6">
+            {/* System Status */}
+            <SystemStatus
+              isConnected={isConnected}
+              isSystemRunning={isSystemRunning}
+              error={error}
+            />
+
             {/* System Control */}
             <div className="flex items-center justify-between">
               <div>
                 <h1 className="text-2xl font-bold text-slate-900">Dashboard</h1>
                 <p className="text-slate-600">Monitor your automated Jira to GitHub workflow</p>
               </div>
-              <button
-                onClick={isSystemRunning ? stopSystem : startSystem}
-                className={`flex items-center gap-2 px-6 py-3 rounded-lg font-medium transition-colors ${
-                  isSystemRunning
-                    ? 'bg-red-600 hover:bg-red-700 text-white'
-                    : 'bg-green-600 hover:bg-green-700 text-white'
-                }`}
-              >
-                {isSystemRunning ? (
-                  <>
-                    <Pause className="w-5 h-5" />
-                    Stop System
-                  </>
-                ) : (
-                  <>
-                    <Play className="w-5 h-5" />
-                    Start System
-                  </>
-                )}
-              </button>
+              <div className="flex items-center gap-4">
+                <button
+                  onClick={resetStats}
+                  className="flex items-center gap-2 px-4 py-2 rounded-lg font-medium text-slate-700 bg-slate-100 hover:bg-slate-200 transition-colors"
+                  disabled={!isConnected}
+                >
+                  Reset Stats
+                </button>
+                <button
+                  onClick={() => isSystemRunning ? stopSystem() : startSystem()}
+                  className={`flex items-center gap-2 px-6 py-3 rounded-lg font-medium transition-colors ${
+                    isSystemRunning
+                      ? 'bg-red-600 hover:bg-red-700 text-white'
+                      : 'bg-green-600 hover:bg-green-700 text-white'
+                  }`}
+                  disabled={!isConnected}
+                >
+                  {isSystemRunning ? (
+                    <>
+                      <Pause className="w-5 h-5" />
+                      Stop System
+                    </>
+                  ) : (
+                    <>
+                      <Play className="w-5 h-5" />
+                      Start System
+                    </>
+                  )}
+                </button>
+              </div>
             </div>
 
             {/* Metrics Cards */}
@@ -73,7 +94,6 @@ function App() {
               <MetricCard
                 title="Pull Requests"
                 value={metrics.totalPullRequests}
-                //change="+12%"
                 changeType="positive"
                 icon={GitPullRequest}
                 color="bg-blue-600"
@@ -81,7 +101,6 @@ function App() {
               <MetricCard
                 title="Tokens Used"
                 value={`${(metrics.tokensUsed / 1000000).toFixed(1)}M`}
-                //change="+8%"
                 changeType="positive"
                 icon={Zap}
                 color="bg-purple-600"
@@ -89,7 +108,6 @@ function App() {
               <MetricCard
                 title="Tasks Completed"
                 value={metrics.tasksCompleted}
-                //change="+15%"
                 changeType="positive"
                 icon={CheckCircle}
                 color="bg-green-600"
@@ -97,7 +115,6 @@ function App() {
               <MetricCard
                 title="Tasks Failed"
                 value={metrics.tasksFailed}
-                //change="-5%"
                 changeType="positive"
                 icon={XCircle}
                 color="bg-red-600"
@@ -105,7 +122,6 @@ function App() {
               <MetricCard
                 title="SonarQube Score"
                 value={`${metrics.averageSonarQubeScore}%`}
-                //change="+3%"
                 changeType="positive"
                 icon={TrendingUp}
                 color="bg-yellow-600"
