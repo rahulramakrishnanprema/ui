@@ -137,7 +137,7 @@ export const SettingsPage: React.FC = () => {
     // Analytics
     {
       id: 'mongodb-atlas-charts',
-      name: 'MongoDB Atlas Charts',
+      name: 'MongoDB Atlas',
       category: 'Analytics',
       icon: BarChart3,
       color: 'bg-green-600',
@@ -270,74 +270,103 @@ export const SettingsPage: React.FC = () => {
       </div>
 
       <div className="grid grid-cols-12 gap-6 h-[calc(100vh-200px)]">
-        {/* Left Panel - Service Categories - Equal Width */}
-        <div className="col-span-6 bg-white rounded-xl shadow-sm border border-slate-200 overflow-y-auto">
-          <div className="p-4 border-b border-slate-200">
+        {/* Left Panel - Service Categories */}
+        <div className="col-span-6 bg-white rounded-xl shadow-sm border border-slate-200">
+          <div className="p-6 border-b border-slate-200">
             <h2 className="text-lg font-semibold text-slate-900">Services</h2>
           </div>
           
-          <div className="p-4 space-y-6">
-            {categories.map((category) => (
-              <div key={category}>
-                <h3 className="text-sm font-medium text-slate-700 mb-3">{category}</h3>
+          <div className="p-6 space-y-8 overflow-y-auto max-h-[calc(100vh-320px)]">
+            {categories.map((category, categoryIndex) => (
+              <motion.div 
+                key={category}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.3, delay: categoryIndex * 0.1 }}
+                className="relative"
+              >
+                {/* Category Header with Gradient Line */}
+                <div className="relative mb-6">
+                  <h3 className="text-sm font-semibold text-slate-800 mb-4 uppercase tracking-wider">
+                    {categoryIndex + 1}. {category}
+                  </h3>
+                  <div className="absolute -bottom-2 left-0 right-0 h-px bg-gradient-to-r from-slate-300 via-slate-200 to-transparent"></div>
+                </div>
                 
-                {/* 3-Column Grid Layout */}
-                <div className="grid grid-cols-3 gap-3">
+                {/* Services Grid */}
+                <div className="grid grid-cols-3 gap-4 mb-8">
                   {services
                     .filter(service => service.category === category)
-                    .map((service) => {
+                    .map((service, serviceIndex) => {
                       const Icon = service.icon;
                       return (
                         <motion.button
                           key={service.id}
-                          whileHover={{ scale: 1.02 }}
+                          initial={{ opacity: 0, scale: 0.9 }}
+                          animate={{ opacity: 1, scale: 1 }}
+                          transition={{ duration: 0.2, delay: serviceIndex * 0.05 }}
+                          whileHover={{ 
+                            scale: 1.05, 
+                            boxShadow: "0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)" 
+                          }}
                           whileTap={{ scale: 0.98 }}
                           onClick={() => setSelectedService(service)}
-                          className={`flex flex-col items-center gap-2 p-3 rounded-lg border transition-all ${
+                          className={`group relative flex flex-col items-center gap-3 p-4 rounded-xl border-2 transition-all duration-300 ${
                             selectedService?.id === service.id
-                              ? 'border-blue-500 bg-blue-50'
-                              : 'border-slate-200 hover:border-slate-300 hover:bg-slate-50'
+                              ? 'border-blue-500 bg-blue-50 shadow-lg'
+                              : 'border-slate-200 hover:border-slate-300 hover:bg-slate-50 shadow-sm'
                           }`}
                         >
-                          <div className={`p-2 rounded-lg ${service.color}`}>
-                            <Icon className="w-5 h-5 text-white" />
+                          {/* Service Icon */}
+                          <div className={`relative p-3 rounded-lg ${service.color} group-hover:scale-110 transition-transform duration-300`}>
+                            <Icon className="w-6 h-6 text-white" />
                           </div>
+                          
+                          {/* Service Name */}
                           <div className="text-center">
-                            <div className="font-medium text-slate-900 text-xs">{service.name}</div>
-                            <div className={`w-2 h-2 rounded-full mx-auto mt-1 ${
-                              service.configured ? 'bg-green-500' : 'bg-red-500'
-                            }`} />
+                            <div className="font-medium text-slate-900 text-sm leading-tight">
+                              {service.name}
+                            </div>
                           </div>
+                          
+                          {/* Status Indicator */}
+                          <div className={`absolute -top-1 -right-1 w-4 h-4 rounded-full border-2 border-white shadow-sm ${
+                            service.configured ? 'bg-green-500' : 'bg-red-500'
+                          }`} />
+                          
+                          {/* Hover Effect Overlay */}
+                          <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-white/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                         </motion.button>
                       );
                     })}
                 </div>
-              </div>
+              </motion.div>
             ))}
           </div>
         </div>
 
-        {/* Right Panel - Configuration Form - Equal Width */}
+        {/* Right Panel - Configuration Form */}
         <div className="col-span-6 bg-white rounded-xl shadow-sm border border-slate-200">
           {selectedService ? (
             <div className="h-full flex flex-col">
-              <div className="p-6 border-b border-slate-200">
+              {/* Header */}
+              <div className="p-6 border-b border-slate-200 bg-gradient-to-r from-slate-50 to-white">
                 <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-3">
-                    <div className={`p-3 rounded-lg ${selectedService.color}`}>
-                      <selectedService.icon className="w-6 h-6 text-white" />
+                  <div className="flex items-center gap-4">
+                    <div className={`p-4 rounded-xl ${selectedService.color} shadow-lg`}>
+                      <selectedService.icon className="w-8 h-8 text-white" />
                     </div>
                     <div>
-                      <h2 className="text-xl font-semibold text-slate-900">{selectedService.name}</h2>
-                      <p className="text-slate-600">{selectedService.category}</p>
+                      <h2 className="text-2xl font-bold text-slate-900">{selectedService.name}</h2>
+                      <p className="text-slate-600 font-medium">{selectedService.category}</p>
                     </div>
                   </div>
-                  <div className={`flex items-center gap-2 px-3 py-1 rounded-full text-sm font-medium ${
+                  <div className={`flex items-center gap-2 px-4 py-2 rounded-full text-sm font-semibold shadow-sm ${
                     selectedService.configured 
-                      ? 'bg-green-100 text-green-800' 
-                      : 'bg-red-100 text-red-800'
+                      ? 'bg-green-100 text-green-800 border border-green-200' 
+                      : 'bg-red-100 text-red-800 border border-red-200'
                   }`}>
-                    <div className={`w-2 h-2 rounded-full ${
+                    <div className={`w-3 h-3 rounded-full ${
                       selectedService.configured ? 'bg-green-500' : 'bg-red-500'
                     }`} />
                     {selectedService.configured ? 'Configured' : 'Not Configured'}
@@ -345,11 +374,18 @@ export const SettingsPage: React.FC = () => {
                 </div>
               </div>
 
+              {/* Form */}
               <div className="flex-1 p-6 overflow-y-auto">
-                <div className="space-y-4">
-                  {selectedService.fields.map((field) => (
-                    <div key={field.key}>
-                      <label className="block text-sm font-medium text-slate-700 mb-2">
+                <div className="space-y-6">
+                  {selectedService.fields.map((field, index) => (
+                    <motion.div 
+                      key={field.key}
+                      initial={{ opacity: 0, x: -20 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ duration: 0.3, delay: index * 0.1 }}
+                      className="group"
+                    >
+                      <label className="block text-sm font-semibold text-slate-700 mb-2">
                         {field.label}
                         {field.required && <span className="text-red-500 ml-1">*</span>}
                       </label>
@@ -357,25 +393,26 @@ export const SettingsPage: React.FC = () => {
                         type={field.type}
                         value={configs[field.key] || ''}
                         onChange={(e) => handleInputChange(field.key, e.target.value)}
-                        className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors"
+                        className="w-full px-4 py-3 border-2 border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300 group-hover:border-slate-300"
                         placeholder={field.placeholder}
                         required={field.required}
                       />
                       {field.description && (
-                        <p className="text-xs text-slate-500 mt-1">{field.description}</p>
+                        <p className="text-xs text-slate-500 mt-2 italic">{field.description}</p>
                       )}
-                    </div>
+                    </motion.div>
                   ))}
                 </div>
               </div>
 
-              <div className="p-6 border-t border-slate-200">
+              {/* Save Button */}
+              <div className="p-6 border-t border-slate-200 bg-gradient-to-r from-slate-50 to-white">
                 <motion.button
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
                   onClick={handleSaveSettings}
                   disabled={saving}
-                  className={`w-full flex items-center justify-center gap-2 px-6 py-3 rounded-lg font-medium text-white transition-all ${getSaveButtonColor()} disabled:opacity-50`}
+                  className={`w-full flex items-center justify-center gap-3 px-6 py-4 rounded-lg font-semibold text-white transition-all duration-300 shadow-lg ${getSaveButtonColor()} disabled:opacity-50`}
                 >
                   {getSaveButtonIcon()}
                   {getSaveButtonContent()}
@@ -383,13 +420,13 @@ export const SettingsPage: React.FC = () => {
               </div>
             </div>
           ) : (
-            <div className="h-full flex items-center justify-center">
+            <div className="h-full flex items-center justify-center bg-gradient-to-br from-slate-50 to-white">
               <div className="text-center">
-                <div className="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <SettingsIcon className="w-8 h-8 text-slate-400" />
+                <div className="w-20 h-20 bg-gradient-to-br from-slate-200 to-slate-300 rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg">
+                  <SettingsIcon className="w-10 h-10 text-slate-500" />
                 </div>
-                <h3 className="text-lg font-medium text-slate-900 mb-2">Select a Service</h3>
-                <p className="text-slate-600">Choose a service from the left panel to configure its settings</p>
+                <h3 className="text-xl font-bold text-slate-900 mb-3">Select a Service</h3>
+                <p className="text-slate-600 max-w-sm">Choose a service from the left panel to configure its settings and start integrating with your workflow</p>
               </div>
             </div>
           )}
