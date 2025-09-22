@@ -148,6 +148,20 @@ export const SettingsPage: React.FC = () => {
         { key: 'MONGODB_ATLAS_PROJECT_ID', label: 'Project ID', type: 'text', placeholder: 'project-id', required: true }
       ]
     },
+    {
+      id: 'grafana',
+      name: 'Grafana',
+      category: 'Analytics',
+      icon: BarChart3,
+      color: 'bg-orange-600',
+      configured: false,
+      fields: [
+        { key: 'GRAFANA_URL', label: 'Grafana URL', type: 'url', placeholder: 'https://your-grafana.com', required: true },
+        { key: 'GRAFANA_API_KEY', label: 'API Key', type: 'password', placeholder: 'your-grafana-api-key', required: true },
+        { key: 'GRAFANA_ORG_ID', label: 'Organization ID', type: 'text', placeholder: '1', required: false },
+        { key: 'GRAFANA_DASHBOARD_ID', label: 'Dashboard ID', type: 'text', placeholder: 'dashboard-id', required: false }
+      ]
+    },
 
     // Cloud
     {
@@ -215,14 +229,10 @@ export const SettingsPage: React.FC = () => {
     setSaveStatus('idle');
 
     try {
-      // Save configuration using the API service
       await api.saveConfig(selectedService.id, configs);
-      
-      // Update service configuration status
       selectedService.configured = true;
       setSaveStatus('success');
       setTimeout(() => setSaveStatus('idle'), 3000);
-      
     } catch (error) {
       console.error('Failed to save configuration:', error);
       setSaveStatus('error');
@@ -260,8 +270,8 @@ export const SettingsPage: React.FC = () => {
       </div>
 
       <div className="grid grid-cols-12 gap-6 h-[calc(100vh-200px)]">
-        {/* Left Panel - Service Categories */}
-        <div className="col-span-4 bg-white rounded-xl shadow-sm border border-slate-200 overflow-y-auto">
+        {/* Left Panel - Service Categories - Equal Width */}
+        <div className="col-span-6 bg-white rounded-xl shadow-sm border border-slate-200 overflow-y-auto">
           <div className="p-4 border-b border-slate-200">
             <h2 className="text-lg font-semibold text-slate-900">Services</h2>
           </div>
@@ -270,7 +280,9 @@ export const SettingsPage: React.FC = () => {
             {categories.map((category) => (
               <div key={category}>
                 <h3 className="text-sm font-medium text-slate-700 mb-3">{category}</h3>
-                <div className="space-y-2">
+                
+                {/* 3-Column Grid Layout */}
+                <div className="grid grid-cols-3 gap-3">
                   {services
                     .filter(service => service.category === category)
                     .map((service) => {
@@ -281,21 +293,21 @@ export const SettingsPage: React.FC = () => {
                           whileHover={{ scale: 1.02 }}
                           whileTap={{ scale: 0.98 }}
                           onClick={() => setSelectedService(service)}
-                          className={`w-full flex items-center gap-3 p-3 rounded-lg border transition-all ${
+                          className={`flex flex-col items-center gap-2 p-3 rounded-lg border transition-all ${
                             selectedService?.id === service.id
                               ? 'border-blue-500 bg-blue-50'
                               : 'border-slate-200 hover:border-slate-300 hover:bg-slate-50'
                           }`}
                         >
                           <div className={`p-2 rounded-lg ${service.color}`}>
-                            <Icon className="w-4 h-4 text-white" />
+                            <Icon className="w-5 h-5 text-white" />
                           </div>
-                          <div className="flex-1 text-left">
-                            <div className="font-medium text-slate-900">{service.name}</div>
+                          <div className="text-center">
+                            <div className="font-medium text-slate-900 text-xs">{service.name}</div>
+                            <div className={`w-2 h-2 rounded-full mx-auto mt-1 ${
+                              service.configured ? 'bg-green-500' : 'bg-red-500'
+                            }`} />
                           </div>
-                          <div className={`w-3 h-3 rounded-full ${
-                            service.configured ? 'bg-green-500' : 'bg-red-500'
-                          }`} />
                         </motion.button>
                       );
                     })}
@@ -305,8 +317,8 @@ export const SettingsPage: React.FC = () => {
           </div>
         </div>
 
-        {/* Right Panel - Configuration Form */}
-        <div className="col-span-8 bg-white rounded-xl shadow-sm border border-slate-200">
+        {/* Right Panel - Configuration Form - Equal Width */}
+        <div className="col-span-6 bg-white rounded-xl shadow-sm border border-slate-200">
           {selectedService ? (
             <div className="h-full flex flex-col">
               <div className="p-6 border-b border-slate-200">
