@@ -271,30 +271,30 @@ export const SettingsPage: React.FC = () => {
 
       <div className="grid grid-cols-12 gap-6 h-[calc(100vh-200px)]">
         {/* Left Panel - Service Categories */}
-        <div className="col-span-6 bg-white rounded-xl shadow-sm border border-slate-200">
+        <div className="col-span-6 bg-white rounded-xl shadow-sm border border-slate-200 flex flex-col">
           <div className="p-6 border-b border-slate-200">
             <h2 className="text-lg font-semibold text-slate-900">Services</h2>
           </div>
           
-          <div className="p-6 space-y-8 overflow-y-auto max-h-[calc(100vh-320px)]">
+          <div className="flex-1 p-6 space-y-6 overflow-y-auto">
             {categories.map((category, categoryIndex) => (
               <motion.div 
                 key={category}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.3, delay: categoryIndex * 0.1 }}
-                className="relative"
+                className="relative mb-6"
               >
                 {/* Category Header with Gradient Line */}
-                <div className="relative mb-6">
+                <div className="relative mb-4">
                   <h3 className="text-sm font-semibold text-slate-800 mb-4 uppercase tracking-wider">
                     {categoryIndex + 1}. {category}
                   </h3>
-                  <div className="absolute -bottom-2 left-0 right-0 h-px bg-gradient-to-r from-slate-300 via-slate-200 to-transparent"></div>
+                  <div className="absolute -bottom-1 left-0 right-0 h-px bg-gradient-to-r from-slate-300 via-slate-200 to-transparent"></div>
                 </div>
                 
                 {/* Services Grid */}
-                <div className="grid grid-cols-3 gap-4 mb-8">
+                <div className="grid grid-cols-3 gap-3">
                   {services
                     .filter(service => service.category === category)
                     .map((service, serviceIndex) => {
@@ -314,7 +314,7 @@ export const SettingsPage: React.FC = () => {
                           className={`group relative flex flex-col items-center gap-3 p-4 rounded-xl border-2 transition-all duration-300 ${
                             selectedService?.id === service.id
                               ? 'border-blue-500 bg-blue-50 shadow-lg'
-                              : 'border-slate-200 hover:border-slate-300 hover:bg-slate-50 shadow-sm'
+                              : 'border-slate-200 hover:border-slate-300 hover:bg-slate-50 shadow-sm h-24'
                           }`}
                         >
                           {/* Service Icon */}
@@ -324,7 +324,7 @@ export const SettingsPage: React.FC = () => {
                           
                           {/* Service Name */}
                           <div className="text-center">
-                            <div className="font-medium text-slate-900 text-sm leading-tight">
+                            <div className="font-medium text-slate-900 text-xs leading-tight">
                               {service.name}
                             </div>
                           </div>
