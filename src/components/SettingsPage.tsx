@@ -269,14 +269,14 @@ export const SettingsPage: React.FC = () => {
         <p className="text-slate-600">Configure your integrations and services</p>
       </div>
 
-      <div className="grid grid-cols-12 gap-6 h-[calc(100vh-200px)]">
+      <div className="grid grid-cols-12 gap-6 h-[calc(100vh-250px)]">
         {/* Left Panel - Service Categories */}
-        <div className="col-span-6 bg-white rounded-xl shadow-sm border border-slate-200 flex flex-col h-full">
+        <div className="col-span-6 bg-white rounded-xl shadow-sm border border-slate-200 flex flex-col">
           <div className="p-6 border-b border-slate-200">
             <h2 className="text-lg font-semibold text-slate-900">Services</h2>
           </div>
           
-          <div className="flex-1 overflow-y-auto">
+          <div className="flex-1 overflow-y-auto max-h-[calc(100vh-350px)]">
             <div className="p-6 space-y-4">
             {categories.map((category, categoryIndex) => (
               <motion.div 
@@ -348,9 +348,9 @@ export const SettingsPage: React.FC = () => {
         </div>
 
         {/* Right Panel - Configuration Form */}
-        <div className="col-span-6 bg-white rounded-xl shadow-sm border border-slate-200 h-full flex flex-col">
+        <div className="col-span-6 bg-white rounded-xl shadow-sm border border-slate-200 flex flex-col">
           {selectedService ? (
-            <div className="flex flex-col h-full">
+            <div className="flex flex-col">
               {/* Header */}
               <div className="p-6 border-b border-slate-200 bg-gradient-to-r from-slate-50 to-white">
                 <div className="flex items-center justify-between">
@@ -377,7 +377,7 @@ export const SettingsPage: React.FC = () => {
               </div>
 
               {/* Form */}
-              <div className="flex-1 overflow-y-auto p-6">
+              <div className="flex-1 overflow-y-auto p-6 max-h-[calc(100vh-450px)]">
                 <div className="space-y-6">
                   {selectedService.fields.map((field, index) => (
                     <motion.div 
@@ -422,7 +422,7 @@ export const SettingsPage: React.FC = () => {
               </div>
             </div>
           ) : (
-            <div className="flex-1 flex items-center justify-center bg-gradient-to-br from-slate-50 to-white">
+            <div className="flex items-center justify-center bg-gradient-to-br from-slate-50 to-white h-[calc(100vh-350px)]">
               <div className="text-center">
                 <div className="w-20 h-20 bg-gradient-to-br from-slate-200 to-slate-300 rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg">
                   <SettingsIcon className="w-10 h-10 text-slate-500" />
